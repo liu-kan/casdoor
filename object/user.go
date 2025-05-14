@@ -131,6 +131,7 @@ type User struct {
 	Slack           string `xorm:"slack varchar(100)" json:"slack"`
 	Steam           string `xorm:"steam varchar(100)" json:"steam"`
 	Bilibili        string `xorm:"bilibili varchar(100)" json:"bilibili"`
+	CSTNET          string `xorm:"cstnet varchar(100)" json:"cstnet"`
 	Okta            string `xorm:"okta varchar(100)" json:"okta"`
 	Douyin          string `xorm:"douyin varchar(100)" json:"douyin"`
 	Kwai            string `xorm:"kwai varchar(100)" json:"kwai"`
@@ -735,6 +736,7 @@ func UpdateUser(id string, user *User, columns []string, isAdmin bool) (bool, er
 			"microsoftonline", "naver", "nextcloud", "onedrive", "oura", "patreon", "paypal", "salesforce", "shopify", "soundcloud",
 			"spotify", "strava", "stripe", "type", "tiktok", "tumblr", "twitch", "twitter", "typetalk", "uber", "vk", "wepay", "xero", "yahoo",
 			"yammer", "yandex", "zoom", "custom", "need_update_password", "ip_whitelist",
+			"cstnet",
 		}
 	}
 	if isAdmin {

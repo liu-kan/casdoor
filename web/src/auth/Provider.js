@@ -129,6 +129,9 @@ const authInfo = {
   Bilibili: {
     endpoint: "https://passport.bilibili.com/register/pc_oauth2.html",
   },
+  CSTNET: {
+    endpoint: "https://passport.escience.cn/oauth2/authorize",
+  },
   Line: {
     scope: "profile%20openid%20email",
     endpoint: "https://access.line.me/oauth2/v2.1/authorize",
