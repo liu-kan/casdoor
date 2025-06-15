@@ -282,13 +282,6 @@ func (c *ApiController) UpdateUser() {
 		return
 	}
 
-	if c.Input().Get("allowEmpty") == "" {
-		if user.DisplayName == "" {
-			c.ResponseError(c.T("user:Display name cannot be empty"))
-			return
-		}
-	}
-
 	if user.MfaEmailEnabled && user.Email == "" {
 		c.ResponseError(c.T("user:MFA email is enabled but email is empty"))
 		return
@@ -310,7 +303,8 @@ func (c *ApiController) UpdateUser() {
 	}
 
 	isAdmin := c.IsAdmin()
-	if pass, err := object.CheckPermissionForUpdateUser(oldUser, &user, isAdmin, c.GetAcceptLanguage()); !pass {
+	allowDisplayNameEmpty := c.Input().Get("allowEmpty") != ""
+	if pass, err := object.CheckPermissionForUpdateUser(oldUser, &user, isAdmin, allowDisplayNameEmpty, c.GetAcceptLanguage()); !pass {
 		c.ResponseError(err)
 		return
 	}
@@ -365,7 +359,7 @@ func (c *ApiController) AddUser() {
 		return
 	}
 
-	c.Data["json"] = wrapActionResponse(object.AddUser(&user))
+	c.Data["json"] = wrapActionResponse(object.AddUser(&user, c.GetAcceptLanguage()))
 	c.ServeJSON()
 }
 
@@ -545,7 +539,7 @@ func (c *ApiController) SetPassword() {
 		return
 	}
 	if organization == nil {
-		c.ResponseError(fmt.Sprintf(c.T("the organization: %s is not found"), targetUser.Owner))
+		c.ResponseError(fmt.Sprintf(c.T("auth:the organization: %s is not found"), targetUser.Owner))
 		return
 	}
 
@@ -703,7 +697,7 @@ func (c *ApiController) RemoveUserFromGroup() {
 		return
 	}
 
-	affected, err := object.DeleteGroupForUser(util.GetId(owner, name), groupName)
+	affected, err := object.DeleteGroupForUser(util.GetId(owner, name), util.GetId(owner, groupName))
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

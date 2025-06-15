@@ -504,6 +504,8 @@ func (c *ApiController) Login() {
 					c.ResponseError(fmt.Sprintf(c.T("verification:Phone number is invalid in your region %s"), authForm.CountryCode))
 					return
 				}
+			} else if verificationCodeType == object.VerifyTypeEmail {
+				checkDest = authForm.Username
 			}
 
 			// check result through Email or Phone
@@ -569,7 +571,7 @@ func (c *ApiController) Login() {
 				}
 
 				var isHuman bool
-				isHuman, err = captcha.VerifyCaptchaByCaptchaType(authForm.CaptchaType, authForm.CaptchaToken, authForm.ClientSecret)
+				isHuman, err = captcha.VerifyCaptchaByCaptchaType(authForm.CaptchaType, authForm.CaptchaToken, captchaProvider.ClientId, authForm.ClientSecret, captchaProvider.ClientId2)
 				if err != nil {
 					c.ResponseError(err.Error())
 					return
@@ -867,7 +869,7 @@ func (c *ApiController) Login() {
 					}
 
 					var affected bool
-					affected, err = object.AddUser(user)
+					affected, err = object.AddUser(user, c.GetAcceptLanguage())
 					if err != nil {
 						c.ResponseError(err.Error())
 						return
